@@ -160,7 +160,7 @@ for args.lr_theta in args.lr_theta_list:
                                         v_t = torch.normal(mean = 0, std = args.std_W, size = W_.shape).to(device)
                                     else:
                                         v_t = torch.zeros_like(W_).to(device)
-                                    W_.add_(args.lr_W * (W_.grad + args.lambd * v_t))
+                                    W_.add_(args.lr_W * (W_.grad + v_t))
 
                                 #Projecting W into a convex space
                                 norm_W = torch.norm(W.data)
