@@ -86,6 +86,17 @@ for args.lr_theta in args.lr_theta_list:
                     for epoch in tqdm(range(args.epochs), f"Lambd: {args.lambd} Model {model_number}"):
                         #Training Loop
                         counter = 0
+                        with torch.no_grad():
+                            if W.grad is not None:
+                                W.grad.copy_(torch.zeros(W.shape))
+                            if not args.demographic_parity:
+                                if W_.grad is not None:
+                                    W_.grad.copy_(torch.zeros(W_.shape))
+
+                            #Resetting the model gradients accumulated across the batch
+                            for name, param in model.named_parameters():
+                                model_grad[name] = torch.zeros(param.shape).to(device)
+                        
                         for batch_no, (non_sensitive, sensitive, label, _) in enumerate(dataloader_train):
                             ##### Per Sample Gradient Updates ######
                             non_sensitive = non_sensitive.to(device)
